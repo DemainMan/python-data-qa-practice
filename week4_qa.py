@@ -15,13 +15,22 @@ def validate_dataframe(df: pd.DataFrame) -> bool:
     - It has at least one column
     """
     # TODO: implement
-    pass
+    if df.empty:
+        return False
+    if df.isnull().values.any():
+        return False
+    if df.shape[1] < 1:
+        return False
+    return True
 
 
 def validate_no_negative_values(df: pd.DataFrame, column: str) -> bool:
     """Return True if all values in the given column are non-negative."""
     # TODO: implement
-    pass
+    if (df[column] < 0).any():
+        return False
+    return True
+    
 
 
 def mock_external_api_call(url: str) -> dict:
@@ -30,7 +39,9 @@ def mock_external_api_call(url: str) -> dict:
     In reality it would call an API. Here, if you call it without mocking,
     it should raise an exception (so you learn to mock it).
     """
-    raise NotImplementedError("This should be mocked in tests")
+    raise NotImplementedError("This should be mocked in tests") 
+
+
 
 
 def process_payment(amount: float, currency: str = "USD") -> float:
@@ -40,4 +51,6 @@ def process_payment(amount: float, currency: str = "USD") -> float:
     If currency is not USD, just return the amount.
     """
     # TODO: implement
-    pass
+    if currency == "USD":
+        return amount * 0.85
+    return amount
