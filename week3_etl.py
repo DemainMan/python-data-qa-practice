@@ -20,7 +20,9 @@ def extract_from_api(api_url: str) -> list:
     Use requests.get() to fetch and return the JSON content.
     """
     # TODO: implement (use requests.get(...).json())
-    pass
+    response = requests.get(api_url)
+    data = response.json()
+    return data
 
 
 def transform_data(data: list) -> list:
@@ -29,7 +31,9 @@ def transform_data(data: list) -> list:
     Return the transformed list.
     """
     # TODO: implement
-    pass
+    for record in data:
+        record['total'] = record['salary'] * 12
+    return data
 
 
 def load_to_sqlite(data: list, db_path: str) -> None:
@@ -39,10 +43,28 @@ def load_to_sqlite(data: list, db_path: str) -> None:
     Assume each dict has keys: name, age, salary, total.
     """
     # TODO: implement
-    pass
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS employees (
+            name TEXT,
+            age INTEGER,
+            salary REAL,
+            total REAL
+        )
+    """)
+    for record in data:
+        cursor.execute("""
+            INSERT INTO employees (name, age, salary, total)
+            VALUES (?, ?, ?, ?)
+        """, (record['name'], record['age'], record['salary'], record['total']))
+    conn.commit()
+    conn.close()    
 
 
 def run_etl(api_url: str, db_path: str) -> None:
     """Run the full ETL pipeline."""
     # TODO: implement: call extract, transform, load
-    pass
+    data = extract_from_api(api_url)
+    transformed_data = transform_data(data)
+    load_to_sqlite(transformed_data, db_path)   
