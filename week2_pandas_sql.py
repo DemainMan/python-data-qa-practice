@@ -11,7 +11,10 @@ import sqlite3
 def load_csv(filepath: str) -> pd.DataFrame:
     """Load a CSV file into a pandas DataFrame."""
     # TODO: implement
-    pass
+    with open(filepath, 'r') as f:
+        df = pd.read_csv(f)
+    return df
+    
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -22,19 +25,25 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     - Remove duplicate rows
     """
     # TODO: implement
-    pass
+    df = df[df['quantity'] > 0]  # Drop rows where quantity is 0 or negative
+    df['price'].fillna(df['price'].mean(), inplace=True)  # Fill missing price with mean
+    df.drop_duplicates(inplace=True)  # Remove duplicate rows
+    return df
 
 
 def total_sales(df: pd.DataFrame) -> float:
     """Return total sales (sum of quantity * price)."""
     # TODO: implement
-    pass
+    total = (df['quantity'] * df['price']).sum()
+    return total
 
 
 def most_sold_product(df: pd.DataFrame) -> str:
     """Return the product with the highest total quantity sold."""
     # TODO: implement
-    pass
+    product_sales = df.groupby('product')['quantity'].sum()
+    most_sold = product_sales.idxmax()
+    return most_sold
 
 
 def query_sales(db_path: str, date: str) -> list:
@@ -45,4 +54,9 @@ def query_sales(db_path: str, date: str) -> list:
     Return a list of tuples.
     """
     # TODO: implement
-    pass
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM sales WHERE date = ?", (date,))
+    results = cursor.fetchall()
+    conn.close()
+    return results
