@@ -1,5 +1,6 @@
 # Python Data & QA Practice
  verification code:WTC-W7VSPKZV
+ verification code: WTC-FHL8VAFY
 A collection of coding exercises for practicing **Data Engineering** and **Quality Assurance** with Python.
 
 ## Setup
